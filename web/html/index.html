@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS 비용 일일 리포트</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>AWS 비용 일일 리포트</h1>
+      <span id="meta" class="badge">-</span>
+    </div>
+    <label class="picker">기준일 <input type="date" id="date"></label>
+  </header>
+
+  <main>
+    <p id="notice" class="notice" hidden></p>
+
+    <section class="cards">
+      <div class="card"><div class="label">일일 총액</div><div class="value" id="total">-</div></div>
+      <div class="card"><div class="label">전일</div><div class="value" id="prev">-</div></div>
+      <div class="card"><div class="label">전일 대비</div><div class="value" id="change">-</div></div>
+      <div class="card"><div class="label">이번 달 누적</div><div class="value" id="mtd">-</div></div>
+    </section>
+
+    <section class="panel">
+      <h2>최근 30일 추이</h2>
+      <div class="chart-box"><canvas id="trendChart" aria-label="최근 30일 일별 총액 추이"></canvas></div>
+    </section>
+
+    <section class="panel">
+      <h2>서비스별 비용 <span class="sub">상위 10개</span></h2>
+      <div class="chart-box tall"><canvas id="serviceChart" aria-label="서비스별 비용"></canvas></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>서비스</th><th>금액</th><th>전일</th><th>증감</th></tr></thead>
+          <tbody id="serviceRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>서비스별 월 예산 <span class="sub" id="budgetMonth">-</span></h2>
+      <form id="budgetForm" class="budget-form">
+        <select id="budgetService" required aria-label="서비스"></select>
+        <input id="budgetAmount" type="number" min="0.01" step="0.01" placeholder="예산 (USD)" required aria-label="예산 금액">
+        <button type="submit">등록</button>
+      </form>
+      <p id="budgetMsg" class="form-msg" role="status"></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>서비스</th><th>예산</th><th>사용액</th><th>사용률</th><th>수정</th></tr></thead>
+          <tbody id="budgetRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="vendor/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

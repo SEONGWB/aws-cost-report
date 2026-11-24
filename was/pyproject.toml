@@ -1,0 +1,6 @@
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = [
+    "postgres: 실제 PostgreSQL이 필요한 통합 테스트 (TEST_DB_HOST 설정 시 실행)",
+]

@@ -1,0 +1,4 @@
+# 개발/테스트 전용 — 이미지에는 들어가지 않음
+-r requirements.txt
+pytest==9.2.0
+httpx2==2.16.2
