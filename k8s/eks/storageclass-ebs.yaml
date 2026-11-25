@@ -1,0 +1,12 @@
+# EKS Auto Mode는 StorageClass를 만들지 않는다. 기본 StorageClass로 지정해 DB PVC(10-db.yaml)가 그대로 사용한다
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: ebs.csi.eks.amazonaws.com
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: gp3
+  encrypted: "true"
