@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cost-db-pvc
+  namespace: cost-report
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cost-db
+  namespace: cost-report
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels: { app: cost-db }
+  template:
+    metadata:
+      labels: { app: cost-db }
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom: { configMapKeyRef: { name: cost-config, key: DB_USER } }
+        - name: POSTGRES_DB
+          valueFrom: { configMapKeyRef: { name: cost-config, key: DB_NAME } }
+        - name: POSTGRES_PASSWORD
+          valueFrom: { secretKeyRef: { name: cost-db-secret, key: DB_PASSWORD } }
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: db-data
+          mountPath: /var/lib/postgresql/data
+        readinessProbe:
+          exec: { command: ["pg_isready", "-U", "cost", "-d", "costdb"] }
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests: { cpu: 100m, memory: 256Mi }
+          limits: { memory: 512Mi }
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: cost-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cost-db
+  namespace: cost-report
+spec:
+  type: ClusterIP
+  selector: { app: cost-db }
+  ports:
+  - port: 5432
+    targetPort: 5432

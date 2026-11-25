@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cost-config
+  namespace: cost-report
+data:
+  COST_SOURCE: mock
+  REPOSITORY: postgres
+  DB_HOST: cost-db
+  DB_PORT: "5432"
+  DB_NAME: costdb
+  DB_USER: cost
